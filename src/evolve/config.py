@@ -18,14 +18,15 @@ FILE_PATTERN = "ev_{year}.csv"
 CATEGORY_COLUMNS = ("two_wheeler", "three_wheeler", "car", "bus", "goods_other")
 
 # ASSUMPTION (unverified): which VAHAN vehicle classes were grouped into each category
-# when the CSVs were exported. Only the `car` grouping has been stated by the project
-# owner; the others are not documented in this repository. Treat all of it as unverified.
+# when the CSVs were exported. This is the author's grouping; it has not been checked
+# against VAHAN's own legend of vehicle-class codes.
+_UNVERIFIED = "author's assumption, not verified against VAHAN's legend"
 CATEGORY_GROUPING_ASSUMPTION = {
-    "two_wheeler": "not documented (unverified)",
-    "three_wheeler": "not documented (unverified)",
-    "car": "LMV + LPV + 4WIC (stated by project owner, unverified)",
-    "bus": "not documented (unverified)",
-    "goods_other": "not documented (unverified)",
+    "two_wheeler": f"2WIC + 2WN + 2WT ({_UNVERIFIED})",
+    "three_wheeler": f"3WIC + 3WN + 3WT ({_UNVERIFIED})",
+    "car": f"LMV + LPV + 4WIC ({_UNVERIFIED})",
+    "bus": f"HPV + MPV + MMV + HMV ({_UNVERIFIED})",
+    "goods_other": f"HGV + LGV + MGV + OTH ({_UNVERIFIED})",
 }
 
 NUMERIC_COLUMNS = CATEGORY_COLUMNS + ("total", "bov_total", "pure_total")

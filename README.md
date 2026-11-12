@@ -76,4 +76,12 @@ These are approximate comparisons with published figures. They are not automated
 - **Pure EV is almost unused before 2024.** It has 28, 0, 6 and 15 registrations nationally in 2020–2023, then 493,268 in 2024 and 1,565,794 in 2025. Using BOV alone would badly undercount 2024–25, which is why both are summed.
 - **Registrations are a proxy for fleet size.** They count new registrations per year, not vehicles on the road. Scrappage, re-registration and inter-state transfers are not accounted for.
 - **No charger data yet.** Nothing here measures charging infrastructure.
-- **The category grouping is an assumption.** How VAHAN vehicle classes were grouped into the five categories (e.g. car = LMV + LPV + 4WIC) has not been verified. It is recorded in `src/evolve/config.py` (`CATEGORY_GROUPING_ASSUMPTION`). Only the `car` grouping is documented there; the others are marked as undocumented.
+- **The category grouping is an assumption.** The grouping of VAHAN vehicle classes into the five categories is the author's own and has not been checked against VAHAN's legend. It is recorded in `src/evolve/config.py` (`CATEGORY_GROUPING_ASSUMPTION`) and repeated in the validation report:
+
+  | Category | VAHAN classes (assumed) |
+  |---|---|
+  | `two_wheeler` | 2WIC + 2WN + 2WT |
+  | `three_wheeler` | 3WIC + 3WN + 3WT |
+  | `car` | LMV + LPV + 4WIC |
+  | `bus` | HPV + MPV + MMV + HMV |
+  | `goods_other` | HGV + LGV + MGV + OTH |

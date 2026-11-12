@@ -100,7 +100,10 @@ def test_report_lists_everything(real):
     assert "**Status: PASSED**" in report
     assert "Sikkim" in report and "Ladakh" in report
     assert "2,356,901" in report
-    assert "LMV + LPV + 4WIC" in report
+    for grouping in ("2WIC + 2WN + 2WT", "3WIC + 3WN + 3WT", "LMV + LPV + 4WIC",
+                     "HPV + MPV + MMV + HMV", "HGV + LGV + MGV + OTH"):
+        assert grouping in report
+    assert "author's assumption, not verified against VAHAN's legend" in report
 
 
 def test_report_collapses_missing_from_pure(real):
