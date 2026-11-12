@@ -98,6 +98,19 @@ def test_report_lists_everything(real):
     issues = validate_all(real)
     report = render_report(issues, real.frame, len(to_long(real.frame)))
     assert "**Status: PASSED**" in report
-    assert "Sikkim" in report and "Telangana" in report and "Ladakh" in report
+    assert "Sikkim" in report and "Ladakh" in report
     assert "2,356,901" in report
     assert "LMV + LPV + 4WIC" in report
+
+
+def test_report_collapses_missing_from_pure(real):
+    issues = validate_all(real)
+    report = render_report(issues, real.frame, len(to_long(real.frame)))
+    assert "| missing_from_pure |" not in report  # no per-row listing
+    section = report.split("## Missing from Pure EV export")[1].split("## ")[0]
+    expected = {2020: 32, 2021: 35, 2022: 33, 2023: 29, 2024: 3, 2025: 1}
+    for year, n in expected.items():
+        assert f"| {year} | {n} |" in section
+    # missing_from_bov and zero_filled stay listed per row.
+    assert "| 2025 | Ladakh | missing_from_bov |" in report
+    assert "| 2020 | Sikkim | zero_filled |" in report

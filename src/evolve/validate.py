@@ -155,8 +155,17 @@ def render_report(issues, wide: pd.DataFrame, long_rows: int) -> str:
     section("Missing files and states", {"missing_file", "missing_state"})
     section("Zero-filled rows", {"zero_filled"},
             "State/UT absent from both exports for that year; counts are zero by construction, not observed zeros.")
-    section("Partially exported rows", {"missing_from_bov", "missing_from_pure"},
-            "State/UT absent from one export; that export's contribution is zero-filled.")
+    section("Missing from BOV export", {"missing_from_bov"},
+            "State/UT absent from the BOV export only; its BOV contribution is zero-filled.")
+
+    lines += ["## Missing from Pure EV export", "",
+              "Number of states/UTs absent from the Pure EV export only (their Pure EV "
+              "contribution is zero-filled). Pure EV was barely used before 2024, so high "
+              "counts in early years are expected.", ""]
+    years = sorted({int(y) for y in wide["file_year"]}) if not wide.empty else []
+    pure_counts = [[y, sum(i.check == "missing_from_pure" and i.year == y for i in issues)]
+                   for y in years]
+    lines.append(_table(pure_counts, ["Year", "States missing from Pure EV export"]))
     section("Warnings", {i.check for i in issues if i.level == WARNING})
 
     lines += ["## Category grouping (assumption)", "",
