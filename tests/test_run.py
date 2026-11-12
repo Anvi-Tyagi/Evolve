@@ -54,3 +54,31 @@ def test_fails_on_bad_data(tmp_path):
     report = (out / "validation_report.md").read_text(encoding="utf-8")
     assert "**Status: FAILED**" in report
     assert "missing_file" in report  # 2021-2025 absent in this temp dir
+
+
+def test_forecast_end_to_end_and_deterministic(tmp_path):
+    outs = []
+    for i in (1, 2):
+        out = tmp_path / f"run{i}"
+        proc = _run("--forecast", "--out-dir", str(out))
+        assert proc.returncode == 0, proc.stderr
+        outs.append(out)
+    for name in ("backtest_results.csv", "backtest_report.md", "forecast_registrations.csv",
+                 "ev_registrations_long.csv", "validation_report.md"):
+        assert (outs[0] / name).read_bytes() == (outs[1] / name).read_bytes(), name
+    fc = pd.read_csv(outs[0] / "forecast_registrations.csv")
+    assert list(fc.columns) == ["state", "category", "year", "forecast", "model", "selected", "low_volume"]
+    assert sorted(fc["year"].unique()) == list(config.FORECAST_YEARS)
+
+
+def test_forecast_refused_on_bad_data(tmp_path):
+    data = tmp_path / "data"
+    data.mkdir()
+    df = pd.read_csv(config.DATA_DIR / "ev_2020.csv")
+    df.loc[0, "car"] = -5
+    df.to_csv(data / "ev_2020.csv", index=False)
+    out = tmp_path / "out"
+    proc = _run("--forecast", "--data-dir", str(data), "--out-dir", str(out))
+    assert proc.returncode == 1
+    assert "Forecast not run" in proc.stderr
+    assert not (out / "forecast_registrations.csv").exists()
