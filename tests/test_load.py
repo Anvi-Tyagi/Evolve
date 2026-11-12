@@ -34,7 +34,8 @@ def test_flags_are_boolean(real):
 
 def test_long_format(real):
     long = to_long(real.frame)
-    assert list(long.columns) == ["state", "year", "category", "count"]
+    assert list(long.columns) == ["state", "year", "category", "count", "zero_filled"]
+    assert long["zero_filled"].dtype == bool
     assert len(long) == 36 * len(config.YEARS) * len(config.CATEGORY_COLUMNS)
     assert set(long["category"]) == set(config.CATEGORY_COLUMNS)
     by_year = long.groupby("year")["count"].sum().to_dict()
@@ -64,3 +65,13 @@ def test_unknown_state_kept_as_na(tmp_path):
     assert out["state"].isna().sum() == 1
     assert out.loc[out["state"].isna(), "state_raw"].item() == "Atlantis"
     assert len(to_long(out)) == 35 * len(config.CATEGORY_COLUMNS)
+
+
+def test_zero_filled_flag(real):
+    long = to_long(real.frame)
+    flagged = set(map(tuple, long.loc[long["zero_filled"], ["state", "year"]].drop_duplicates().values))
+    assert flagged == {("Sikkim", y) for y in (2020, 2021, 2022, 2023)} | {("Ladakh", 2020)}
+    assert long["zero_filled"].sum() == 5 * len(config.CATEGORY_COLUMNS)
+    assert (long.loc[long["zero_filled"], "count"] == 0).all()
+    # Partially exported rows (e.g. Ladakh 2025, BOV missing only) are not zero-filled.
+    assert not long[(long["state"] == "Ladakh") & (long["year"] == 2025)]["zero_filled"].any()

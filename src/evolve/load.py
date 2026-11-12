@@ -73,13 +73,19 @@ def load_all(data_dir=config.DATA_DIR, years=config.YEARS) -> LoadResult:
 def to_long(wide: pd.DataFrame) -> pd.DataFrame:
     """Tidy long format: one row per (state, year, category) with its registration count.
 
+    `zero_filled` is True when the state was absent from both the BOV and Pure EV exports
+    that year, so its counts are zeros by construction rather than observed zeros.
     Rows whose state could not be normalised are excluded here; the validator reports them.
     """
-    known = wide[wide["state"].notna()]
+    known = wide[wide["state"].notna()].copy()
+    known["zero_filled"] = (
+        ~known["in_bov_export"].fillna(True) & ~known["in_pure_export"].fillna(True)
+    ).astype(bool)
     long = known.melt(
-        id_vars=["state", "year"],
+        id_vars=["state", "year", "zero_filled"],
         value_vars=list(config.CATEGORY_COLUMNS),
         var_name="category",
         value_name="count",
     )
+    long = long[["state", "year", "category", "count", "zero_filled"]]
     return long.sort_values(["year", "state", "category"]).reset_index(drop=True)

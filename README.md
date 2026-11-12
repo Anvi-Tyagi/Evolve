@@ -34,7 +34,7 @@ Each count is BOV and Pure EV summed.
 
 ## Output (`outputs/`, not tracked by git)
 
-- `ev_registrations_long.csv`: tidy long format with columns `state, year, category, count`. It has 36 states × 6 years × 5 categories = 1,080 rows. `state` uses the canonical names in `src/evolve/states.py`.
+- `ev_registrations_long.csv`: tidy long format with columns `state, year, category, count, zero_filled`. It has 36 states × 6 years × 5 categories = 1,080 rows. `state` uses the canonical names in `src/evolve/states.py`. `zero_filled` is `True` when the state was absent from both the BOV and Pure EV exports that year, so its counts are zeros by construction rather than observed zeros. In the current data that applies to Sikkim 2020–2023 and Ladakh 2020. Rows absent from only one export are `False`.
 - `validation_report.md`: a per-year summary (state count, national total against the expected figure, BOV/Pure EV split) and every error, dropped row, missing file or state, zero-filled row and partially exported row, plus the category-grouping assumption.
 
 ## Code layout

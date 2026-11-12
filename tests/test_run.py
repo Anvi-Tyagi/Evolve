@@ -25,7 +25,9 @@ def test_end_to_end(tmp_path):
     assert _snapshot(config.PROTECTED_DIR) == before  # nothing written under EV_data/
 
     long = pd.read_csv(tmp_path / "ev_registrations_long.csv")
-    assert list(long.columns) == ["state", "year", "category", "count"]
+    assert list(long.columns) == ["state", "year", "category", "count", "zero_filled"]
+    assert long["zero_filled"].dtype == bool
+    assert long["zero_filled"].sum() == 25
     assert long.groupby("year")["count"].sum().to_dict() == config.EXPECTED_NATIONAL_TOTALS
     assert "**Status: PASSED**" in (tmp_path / "validation_report.md").read_text(encoding="utf-8")
 
