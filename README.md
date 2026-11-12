@@ -52,11 +52,21 @@ The two former UTs "Dadra and Nagar Haveli" and "Daman and Diu" (merged in Janua
 
 ### Sanity-check totals
 
-These are the national sums of VAHAN EV registrations (ELECTRIC(BOV) + PURE EV), supplied by the project owner. They live in `config.EXPECTED_NATIONAL_TOTALS`, and the current data matches all of them.
+`config.EXPECTED_NATIONAL_TOTALS` holds the national sum for each year (ELECTRIC(BOV) + PURE EV). These figures are sums of these same CSVs, so the check guards against accidental edits to the files or the code. It does not guard against an export that was wrong in the first place; for that, see the external cross-checks below.
 
 | 2020 | 2021 | 2022 | 2023 | 2024 | 2025 |
 |---|---|---|---|---|---|
 | 126,027 | 341,233 | 1,059,534 | 1,582,828 | 2,026,397 | 2,356,901 |
+
+## External cross-checks
+
+These are approximate comparisons with published figures. They are not automated tests. Published figures vary by source, by date of extraction and by how vehicle categories are defined, so small differences are expected.
+
+| Measure | This data | Published | Source |
+|---|---|---|---|
+| 2024 electric cars | 105,598 | 106,122 | [EVreporter, India electric car sales report CY 2024](https://evreporter.com/india-electric-car-sales-report-cy-2024-excerpts/) |
+| 2024 electric two-wheelers | 1,214,778 | 1,204,926 | [JMK Research, EV ARC CY2024](https://jmkresearch.com/wp-content/uploads/2025/01/EV-ARC-CY2024-1.pdf) |
+| 2025 all EVs | 2,356,901 | about 2.3 million | [Free Press Journal, citing Vahan](https://www.freepressjournal.in/amp/business/indias-ev-sales-touch-23-million-in-2025-as-market-share-rises-to-8-per-cent) |
 
 ## Limitations
 

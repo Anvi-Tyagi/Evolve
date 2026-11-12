@@ -34,8 +34,9 @@ REQUIRED_COLUMNS = ("state", "year") + NUMERIC_COLUMNS + FLAG_COLUMNS
 
 EXPECTED_STATE_COUNT = 36
 
-# Source: national sums of VAHAN EV registrations (fuel ELECTRIC(BOV) + PURE EV),
-# supplied by the project owner as sanity-check figures for these exports.
+# National sums of VAHAN EV registrations (fuel ELECTRIC(BOV) + PURE EV), computed from
+# these same CSVs. This check guards against accidental edits to the files or the code,
+# not against an export that was wrong in the first place (see README, External cross-checks).
 EXPECTED_NATIONAL_TOTALS = {
     2020: 126_027,
     2021: 341_233,
