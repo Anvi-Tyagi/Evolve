@@ -46,3 +46,29 @@ EXPECTED_NATIONAL_TOTALS = {
     2024: 2_026_397,
     2025: 2_356_901,
 }
+
+# ---------------------------------------------------------------------------
+# Phase 2: forecasting. All of these are fixed before any backtest is run.
+# ---------------------------------------------------------------------------
+# Categories modelled per state; the other two are low-volume and get only baselines
+# at state level plus a national-level trend.
+TARGET_CATEGORIES = ("two_wheeler", "three_wheeler", "car")
+LOW_VOLUME_CATEGORIES = ("bus", "goods_other")
+
+# Expanding-window backtest: (first training year, last training year, test year).
+BACKTEST_FOLDS = ((2020, 2023, 2024), (2020, 2024, 2025))
+FORECAST_YEARS = tuple(range(2026, 2031))
+
+# MAPE is computed only on state-category rows whose actual is at least this value.
+MAPE_MIN_ACTUAL = 100
+
+# The legacy notebook's fixed growth rate, kept as a baseline.
+BASELINE_GROWTH = 0.30
+
+# Candidate shrinkage strengths (lambda). 0 = each state's own slope; inf = pooled slope.
+SHRINKAGE_GRID = (0.0, 0.5, 1.0, 2.0, 5.0, 10.0, 20.0, 50.0, float("inf"))
+# Inner one-step-ahead folds need at least this many earlier years to fit on.
+SHRINKAGE_MIN_INNER_TRAIN_YEARS = 3
+
+# Label used for national-level rows in forecast outputs.
+NATIONAL_LABEL = "All India"

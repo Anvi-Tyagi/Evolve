@@ -9,6 +9,7 @@ from typing import Optional
 import pandas as pd
 
 from . import config
+from .report import md_table as _table
 from .states import CANONICAL_STATES
 
 ERROR, WARNING, INFO = "error", "warning", "info"
@@ -113,14 +114,6 @@ def validate_all(result) -> list:
 
 def has_errors(issues) -> bool:
     return any(i.level == ERROR for i in issues)
-
-
-def _table(rows, headers) -> str:
-    if not rows:
-        return "_None._\n"
-    out = ["| " + " | ".join(headers) + " |", "|" + "---|" * len(headers)]
-    out += ["| " + " | ".join(str(c) for c in r) + " |" for r in rows]
-    return "\n".join(out) + "\n"
 
 
 def render_report(issues, wide: pd.DataFrame, long_rows: int) -> str:
