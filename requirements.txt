@@ -1,8 +1,2 @@
-pandas
-numpy
-matplotlib
-seaborn
-joblib
-openpyxl
-xgboost==1.7.6
-scikit-learn
+pandas>=2.0
+pytest>=7.0
