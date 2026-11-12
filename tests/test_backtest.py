@@ -106,7 +106,7 @@ def test_national_growth_matches_totals(long):
 
 def test_report_sections(bt, long):
     report = render_report(bt, select_models(bt.results), long)
-    for heading in ("National growth slowdown", "### two_wheeler", "### bus (low volume",
+    for heading in ("Implied annual growth", "National growth slowdown", "### two_wheeler", "### bus (low volume",
                     "Shrinkage strength", "Rows excluded", "Logistic S-curve"):
         assert heading in report
     assert report.count("**Selected:") == 3 + 2 * 2

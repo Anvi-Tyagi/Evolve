@@ -28,6 +28,7 @@ class BacktestResult:
     excluded: list = field(default_factory=list)   # (fold, category, state, reason)
     lambdas: dict = field(default_factory=dict)    # (fold, category) -> chosen lambda
     inner_scores: dict = field(default_factory=dict)
+    pooled_growth: dict = field(default_factory=dict)  # (fold, category) -> exp(slope) - 1
 
 
 def split(cat_df: pd.DataFrame, start: int, end: int, test_year: int):
@@ -73,6 +74,8 @@ def run_backtest(long: pd.DataFrame, folds=config.BACKTEST_FOLDS) -> BacktestRes
             preds = {}
             for name in names:
                 model = make_model(name).fit(train)
+                if name == "pooled":
+                    out.pooled_growth[(fold_no, cat)] = model.growth_rate()
                 if name == "shrinkage":
                     out.lambdas[(fold_no, cat)] = model.lam
                     out.inner_scores[(fold_no, cat)] = dict(model.inner_scores_)
@@ -184,6 +187,12 @@ def render_report(bt: BacktestResult, selection: dict, long: pd.DataFrame) -> st
             L.append(_results_table(nat, national=True))
             L.append(_mean_line(nat.groupby("model")["wape"].mean(), selection[(cat, "national")]))
             L.append("")
+
+    L += ["## Implied annual growth of the pooled model", "",
+          "exp(shared slope) - 1 on the log1p scale, fitted on each fold's training years.", ""]
+    L.append(md_table([[f, c, _pct(g)] for (f, c), g in sorted(bt.pooled_growth.items())],
+                      ["Fold", "Category", "Implied annual growth"]))
+    L.append("")
 
     L += ["## Shrinkage strength chosen inside each training window", "",
           "Lambda is picked by one-step-ahead inner folds within the training years only; "
